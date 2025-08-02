@@ -1,0 +1,7 @@
+streamlit
+openai
+requests
+beautifulsoup4
+pytesseract
+Pillow
+pymupdf
