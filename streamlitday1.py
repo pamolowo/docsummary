@@ -1,5 +1,5 @@
 import streamlit as st
-from openai import OpenAI
+import openai
 import requests
 from bs4 import BeautifulSoup
 import fitz  # PyMuPDF
@@ -12,7 +12,7 @@ import os
 # It's safer to use environment variables for keys, but for now, hardcode for testing
 load_dotenv(override=True)
 api_key = os.getenv('OPENAI_API_KEY')
-openai = OpenAI()  # Replace with your actual key
+openai = openai()  # Replace with your actual key
 
 # Document classes
 class Website:
