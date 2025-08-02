@@ -8,11 +8,9 @@ import pytesseract
 from dotenv import load_dotenv
 import os
 
-# Initialize OpenAI client with your API key
-# It's safer to use environment variables for keys, but for now, hardcode for testing
-load_dotenv(override=True)
-api_key = os.getenv('OPENAI_API_KEY')
-openai = openai()  # Replace with your actual key
+# Load environment variables (for your OpenAI key)
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Document classes
 class Website:
@@ -46,6 +44,7 @@ class ImageFile:
         image = Image.open(file_path)
         self.text = pytesseract.image_to_string(image)
 
+# Prompt structure for OpenAI
 def construct_messages(doc):
     return [
         {
@@ -58,18 +57,19 @@ def construct_messages(doc):
         }
     ]
 
+# Summarize function
 def summarize_document(doc, model="gpt-4"):
     messages = construct_messages(doc)
-    response = openai.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
         temperature=0.3,
         max_tokens=500
     )
-    return response.choices[0].message.content
+    return response['choices'][0]['message']['content']
 
-# Streamlit UI starts here
-st.title("Document Summarizer with OpenAI")
+# Streamlit UI
+st.title("📄 Document Summarizer with OpenAI")
 
 option = st.radio("Choose input type:", ("Website URL", "Upload PDF", "Upload Text File", "Upload Image"))
 
@@ -91,7 +91,6 @@ elif option == "Upload PDF":
     if uploaded_pdf:
         with st.spinner("Reading and summarizing PDF..."):
             try:
-                # Save temporarily to disk to allow fitz to read it
                 with open("temp.pdf", "wb") as f:
                     f.write(uploaded_pdf.getbuffer())
                 doc = PDFFile("temp.pdf")
