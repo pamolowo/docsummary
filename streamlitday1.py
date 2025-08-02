@@ -5,10 +5,14 @@ from bs4 import BeautifulSoup
 import fitz  # PyMuPDF
 from PIL import Image
 import pytesseract
+from dotenv import load_dotenv
+import os
 
 # Initialize OpenAI client with your API key
 # It's safer to use environment variables for keys, but for now, hardcode for testing
-client = OpenAI(api_key="sk-...")  # Replace with your actual key
+load_dotenv(override=True)
+api_key = os.getenv('OPENAI_API_KEY')
+openai = OpenAI()  # Replace with your actual key
 
 # Document classes
 class Website:
@@ -56,7 +60,7 @@ def construct_messages(doc):
 
 def summarize_document(doc, model="gpt-4"):
     messages = construct_messages(doc)
-    response = client.chat.completions.create(
+    response = openai.chat.completions.create(
         model=model,
         messages=messages,
         temperature=0.3,
